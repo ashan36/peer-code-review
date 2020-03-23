@@ -112,8 +112,7 @@ const Dashboard = () => {
         }
       });
       if (data.errors) {
-        console.log(data.errors);
-        return {}; // if there is an error, return empty user object
+        return; //TODO alert user
       } else {
         if (data.success) {
           dispatch({
@@ -156,7 +155,6 @@ const Dashboard = () => {
         }
       }
     } catch (err) {
-      console.log(err);
       window.location.reload(true); //If there's an error, refresh the whole page
     }
   };

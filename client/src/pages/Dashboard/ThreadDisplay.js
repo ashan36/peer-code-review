@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Grid,
@@ -86,6 +86,31 @@ const ThreadDisplay = ({
   const classes = useStyles();
 
   const [replyButtonText, setReplyButtonText] = useState("Reply");
+  const [participants, setParticipants] = useState(null);
+
+  const getParticipants = async () => {
+    console.log("getting participants");
+    try {
+      const { data } = await axios({
+        url: `/thread/${threadData._id}/posts/authors`,
+        method: "get",
+        headers: { ...authHeader().headers }
+      });
+      if (data.errors) {
+        console.log(data.errors);
+        return;
+      }
+      console.log(data);
+      setParticipants(data.authors);
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    getParticipants();
+  }, [threadData]);
 
   //Editor state
   const [readOnly, setReadOnly] = useState(true);
@@ -292,7 +317,7 @@ const ThreadDisplay = ({
     return <></>;
   };
 
-  if (!threadData) {
+  if (!threadData || !participants) {
     return (
       <div>
         <Backdrop className={classes.backdrop} open={true}>
@@ -304,6 +329,7 @@ const ThreadDisplay = ({
       </div>
     );
   } else {
+    console.log(participants);
     return (
       <div className={classes.root}>
         <Grid container className={classes.container}>
@@ -345,6 +371,7 @@ const ThreadDisplay = ({
               {threadData.posts.map(post => {
                 return (
                   <PostDisplay
+                    author={participants[post.author]}
                     user={user}
                     postData={post}
                     postLanguage={threadData.language.name}

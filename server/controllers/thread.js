@@ -1,5 +1,11 @@
+const mongoose = require("mongoose");
 const { Thread, Post, threadQueries } = require("../database");
-const { unassignThread, newRating, updateRating } = require("./user");
+const {
+  unassignThread,
+  newRating,
+  updateRating,
+  getGeneralUserInfo
+} = require("./user");
 const config = require("../config/config");
 
 module.exports = {
@@ -101,6 +107,36 @@ module.exports = {
   getAssignedThreads: async userId => {
     const user = await threadQueries.getAssignedThreads(userId);
     return user.assignedThreads;
+  },
+
+  getThreadAuthors: async threadId => {
+    try {
+      if (!mongoose.isValidObjectId(threadId)) {
+        throw new Error("Invalid Id Error");
+      }
+      const thread = await Thread.findById(threadId);
+      if (!thread) {
+        throw new Error("Thread not found");
+      }
+      const users = {};
+      for (let i = 0; i < thread.posts.length; i++) {
+        if (!users.hasOwnProperty(thread.posts[i].author.toString())) {
+          users[thread.posts[i].author.toString()] = null;
+        }
+      }
+      let userArray = Object.keys(users);
+      userArray = await getGeneralUserInfo(userArray);
+      if (!userArray) {
+        throw new Error("Failed to get user info");
+      }
+      userArray.forEach(user => {
+        users[user._id] = user;
+      });
+      return users;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   },
 
   addToNoAssign: async (threadId, userId) => {

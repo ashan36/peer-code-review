@@ -26,6 +26,11 @@ const config = {
   },
   stripe: {
     stripeSecret: process.env.STRIPE_SECRET_KEY
+  },
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_ID,
+    secretKey: process.env.AWS_SECRET,
+    bucketName: "peer-code"
   }
 };
 

@@ -8,13 +8,16 @@ const {
   updateCredits,
   unassignThread,
   editName,
-  getUserActivity
+  getUserActivity,
+  uploadAvatar
 } = require("../controllers/user");
 const matchingQueue = require("../services/matchingQueue");
 const { User, Thread } = require("../database");
 const stripe = require("stripe")(config.stripe.stripeSecret);
 const mongoose = require("mongoose");
 const isAuth = config.server.isAuth;
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.post(
   "/signup",
@@ -213,6 +216,17 @@ router.put("/user/:id/experience", isAuth, async (req, res) => {
   } catch (err) {
     return res.status(400).send({ message: err.message });
   }
+});
+
+router.post("/user/:id/avatar", isAuth, upload.any(), async (req, res) => {
+  const url = await uploadAvatar(
+    req.params.id,
+    req.files[0].buffer,
+    req.body.type
+  );
+  if (url) {
+    return res.status(200).send({ message: "received", url: url });
+  } else return res.status(500);
 });
 
 router.post("/user/:id/purchase-credit", isAuth, async (req, res) => {

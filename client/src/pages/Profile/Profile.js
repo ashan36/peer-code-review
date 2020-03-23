@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { ProfileName, ProfileExperience, ProfileActivity } from "./index";
+import {
+  ProfileName,
+  ProfilePicture,
+  ProfileExperience,
+  ProfileActivity
+} from "./index";
 import { UserContext } from "context/UserContext";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import { useParams } from "react-router-dom";
@@ -11,9 +16,9 @@ import axios from "axios";
 
 const useStyles = makeStyles({
   root: {
-    paddingTop: "15vh",
-    paddingLeft: "25vh",
-    paddingRight: "25vh",
+    paddingTop: "10vh",
+    paddingLeft: "18vh",
+    paddingRight: "18vh",
     paddingBottom: "15vh",
     overflowX: "auto"
   },
@@ -23,6 +28,7 @@ const useStyles = makeStyles({
   paper: {
     textAlign: "center",
     padding: "3vh",
+    paddingTop: "8vh",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between"
@@ -33,11 +39,11 @@ const useStyles = makeStyles({
   smallPaper: {
     height: "90vh"
   },
-  name: {
-    fontWeight: "800"
-  },
   icon: {
-    color: "#888888"
+    color: "#888888",
+    "&:hover": {
+      color: "black"
+    }
   }
 });
 
@@ -101,6 +107,23 @@ const Profile = ({ editable, userProp, width }) => {
     setUser({ ...user, name, email });
   };
 
+  const saveAvatar = async file => {
+    const form = new FormData();
+    form.append("data", file.data);
+    form.append("fileName", file.data.name);
+    form.append("type", file.type);
+    const response = await axios.post(
+      `/user/${user._id}/avatar`,
+      form,
+      authHeader()
+    );
+    if (response) {
+      setUser(prev => {
+        return { ...prev, avatar: { url: response.data.url } };
+      });
+    }
+  };
+
   const changeName = e => setName(e.target.value);
 
   const changeEmail = e => setEmail(e.target.value);
@@ -124,7 +147,9 @@ const Profile = ({ editable, userProp, width }) => {
             {!isEditing && (
               <EditIcon className={classes.icon} onClick={toggleEditing} />
             )}
-            {isEditing && <SaveRoundedIcon onClick={submitEdits} />}
+            {isEditing && (
+              <SaveRoundedIcon className={classes.icon} onClick={submitEdits} />
+            )}
           </Grid>
         </Grid>
       );
@@ -146,6 +171,12 @@ const Profile = ({ editable, userProp, width }) => {
         className={`${width > 960 ? classes.root : classes.smallRoot}`}
       >
         <Grid item xs={12}>
+          <ProfilePicture
+            user={user}
+            editable={editable}
+            isEditing={isEditing}
+            saveAvatar={saveAvatar}
+          />
           <Paper
             elevation={24}
             className={`${classes.paper} ${

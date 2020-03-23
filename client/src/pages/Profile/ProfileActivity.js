@@ -27,9 +27,6 @@ const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "space-between"
   },
-  name: {
-    fontWeight: "800"
-  },
   link: {
     textDecoration: "none"
   },
@@ -82,6 +79,7 @@ const ProfileActivity = ({ ownProfile, userId, user }) => {
                 </Typography>
                 <Rating
                   value={user.rating.averageRating}
+                  name="disabled"
                   disabled
                   precision={0.25}
                 />
@@ -142,7 +140,12 @@ const ProfileActivity = ({ ownProfile, userId, user }) => {
                   <Typography gutterBottom variant="h5" component="h2">
                     {rating}
                   </Typography>
-                  <Rating value={rating} precision={0.25} disabled />
+                  <Rating
+                    value={rating}
+                    precision={0.25}
+                    disabled
+                    name="disabled"
+                  />
                 </CardContent>
               </Card>
             </Grid>

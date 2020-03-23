@@ -9,8 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import CloseIcon from "@material-ui/icons/Close";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import { TextEditor } from "components";
+import { TextEditor, CustomAvatar } from "components";
 
 const useStyles = makeStyles({
   root: {
@@ -19,7 +18,7 @@ const useStyles = makeStyles({
   posterInfo: {
     display: "inline",
     fontSize: "1.5em",
-    margin: "0 1vh 0 0"
+    margin: "0 1vh 0 1vh"
   },
   editor: {
     padding: "10px",
@@ -27,18 +26,29 @@ const useStyles = makeStyles({
   },
   editButton: {
     color: "#888888",
+    "&:hover": {
+      color: "black"
+    },
     textTransform: "none",
     marginLeft: "5px"
   },
   link: {
     textDecoration: "none",
-    color: "black"
+    color: "black",
+    display: "flex",
+    alignItems: "center"
   },
   saveGrid: {
     marginBottom: "2vh"
   },
   saveButton: {
     background: "#43DDC1"
+  },
+  avatar: {
+    height: "5vh",
+    width: "5vh",
+    minHeight: "50px",
+    minWidth: "50px"
   }
 });
 
@@ -47,10 +57,10 @@ const PostDisplay = ({
   postLanguage,
   onEditPost,
   onErrors,
+  author,
   user
 }) => {
   const classes = useStyles();
-
   //editor state
   const [readOnly, setReadOnly] = useState(true);
   const [submitState, setSubmitState] = useState(false);
@@ -96,17 +106,17 @@ const PostDisplay = ({
     setSubmitState(false);
   }, [submitState]);
 
-  if (!user) {
-    return <p>Nothing to display</p>;
+  if (!author || !postData) {
+    return <div></div>;
   }
   return (
     <div className={classes.root}>
       <Grid container spacing={1} justify="space-between" alignItems="center">
         <Grid item xs={11}>
           <Link to={`/profile/${postData.author}`} className={classes.link}>
-            <AccountCircle className={classes.posterInfo} />
+            <CustomAvatar user={author} avatarStyles={classes.avatar} />
             <Typography className={classes.posterInfo}>
-              {postData.authorName}
+              {author.name}
             </Typography>
           </Link>
         </Grid>

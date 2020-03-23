@@ -20,6 +20,7 @@
     "react": "^16.8.6",
     "react-credit-card-input": "^1.1.5",
     "react-dom": "^16.8.6",
+    "react-dropzone": "^10.2.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-stripe-elements": "^6.1.0",

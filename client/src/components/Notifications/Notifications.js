@@ -122,7 +122,6 @@ const Notifications = () => {
     const now = Date.now();
     const timeDelta = now - created.valueOf();
     let elapsed = 0;
-    console.log(timeDelta);
     if (timeDelta < timeMap.minute) {
       return "just now";
     } else if (timeDelta < timeMap.hour) {
@@ -191,9 +190,6 @@ const Notifications = () => {
         id="notification-bell"
         className={classes.menu}
         anchorEl={anchorEl}
-        anchorOrigin={{
-          horizontal: "center"
-        }}
         transformOrigin={{
           vertical: -40,
           horizontal: "right"
@@ -203,7 +199,8 @@ const Notifications = () => {
         onClose={handleClose}
         PaperProps={{
           style: {
-            maxHeight: 300
+            maxHeight: 300,
+            maxWidth: 500
           }
         }}
         MenuListProps={{
@@ -212,8 +209,8 @@ const Notifications = () => {
       >
         {state.notifications.map(ele => {
           return (
-            <>
-              <Link to={ele.link} className={classes.link} key={ele._id}>
+            <div key={ele._id}>
+              <Link to={ele.link} className={classes.link}>
                 <MenuItem
                   className={`${classes.link} ${
                     ele.seen ? classes.seen : classes.unseen
@@ -232,7 +229,7 @@ const Notifications = () => {
                 </MenuItem>
               </Link>
               <Divider className={classes.divider} />
-            </>
+            </div>
           );
         })}
       </Menu>

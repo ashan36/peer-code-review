@@ -8,7 +8,8 @@ const {
   getRequestThreads,
   getReviewThreads,
   getAssignedThreads,
-  setRating
+  setRating,
+  getThreadAuthors
 } = require("../controllers/thread");
 const { createNotification } = require("../controllers/notifications");
 const MatchingService = require("../services/matchingQueue");
@@ -136,6 +137,32 @@ router.get("/thread/:id", isAuth, async (req, res) => {
       });
     }
     return res.sendStatus(500);
+  }
+});
+
+router.get("/thread/:threadId/posts/authors", isAuth, async (req, res) => {
+  const threadId = req.params.threadId;
+  try {
+    const authors = await getThreadAuthors(threadId);
+    if (authors) {
+      res.status(200).json({
+        success: true,
+        authors: authors
+      });
+    } else throw new Error();
+  } catch (err) {
+    console.error(err);
+    if (err.message === "Invalid Id Error") {
+      return res.status(404).json({
+        errors: [
+          {
+            value: req.params.threadId,
+            msg: "Thread not found",
+            param: "threadId"
+          }
+        ]
+      });
+    } else res.sendStatus(500);
   }
 });
 

@@ -23,6 +23,10 @@ const userSchema = new Schema(
       type: Schema.Types.Mixed,
       of: Number
     },
+    avatar: {
+      url: { type: String, default: "" },
+      key: { type: String, default: "" }
+    },
     assignedThreads: [{ type: Schema.Types.ObjectId, ref: Thread }],
     assignedCount: { type: Number, default: 0 },
     credits: {

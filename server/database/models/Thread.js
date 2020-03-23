@@ -29,7 +29,7 @@ const threadSchema = new Schema(
     noAssign: [{ type: Schema.Types.ObjectId, ref: "User" }],
     rating: {
       type: Number,
-      default: 3
+      default: 0
     }
   },
   { timestamps: true }

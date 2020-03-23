@@ -1,5 +1,6 @@
 const { User, Thread } = require("../database");
 const config = require("../config/config");
+const { uploadPicture, deleteFile } = require("../utils/awsUpload");
 
 module.exports = {
   setExperience: async (userId, experience) => {
@@ -20,6 +21,26 @@ module.exports = {
     user.experience = experience;
     user.markModified("experience");
     user.save();
+  },
+
+  uploadAvatar: async (userId, buffer, type) => {
+    try {
+      const user = await User.findById(userId);
+      if (user.avatar.key !== "") {
+        const result = deleteFile(user.avatar.key);
+        if (!result) {
+          throw new Error("Failed to delete file from S3");
+        }
+      }
+      const result = await uploadPicture(userId, buffer, type);
+      user.avatar.url = result.Location;
+      user.avatar.key = result.Key;
+      await user.save();
+      return result.Location;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   },
 
   updateCredits: async (userId, amount) => {
@@ -109,5 +130,15 @@ module.exports = {
       reviews: reviews.length,
       rating: user.rating.averageRating
     };
+  },
+
+  getGeneralUserInfo: async users => {
+    try {
+      const result = await User.find({ _id: { $in: users } }, "name avatar");
+      return result;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 };

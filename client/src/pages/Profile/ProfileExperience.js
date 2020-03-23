@@ -17,7 +17,10 @@ const useStyles = makeStyles({
     fontSize: "3vh"
   },
   link: {
-    color: "#888888"
+    color: "#888888",
+    "&:hover": {
+      color: "black"
+    }
   }
 });
 
@@ -42,9 +45,9 @@ const ProfileExperience = ({ experience, editable }) => {
           <div></div>
         )}
       </Grid>
-      <Grid container item spacing={4} justify="center">
-        {experience.map(exp => (
-          <Grid item xs={12} sm={6} md={4} lg={2} key={exp[0]}>
+      <Grid container item spacing={6} justify="space-around">
+        {experience.map((exp, index) => (
+          <Grid item xs={12} sm={8} md={6} lg={3} key={index}>
             <i
               className={`${
                 Object.keys(exp)[0] === "C++"
