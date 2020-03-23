@@ -2,7 +2,7 @@
 
 ## To Run Locally
 ### Install dependencies
-1. `git clone https://github.com/rkerins91/peer-code-review.git`
+1. `git clone https://github.com/ashan36/peer-code-review.git`
 2. Navigate to root directory on shell
 3. Navigate to client directory and run `npm install`
 4. Navigate to server directory and run `npm intall`
@@ -31,11 +31,13 @@ ___
 Peer code review is an application that allows users to request code reviews from people who have more experience in specific programming languages than them. Users can create an account, set their experience, upload code to be reviewed using our rich text editor, purchase credits to get more reviews, view the profiles of other users, and get notifications when they have a new review or when they get assigned code to review.
 
 ## Who built it?
-Peer Code Review was built by Ryan Kerins, Alexander Han, and Nicolas Harrison
+Peer Code Review was built by [Alexander Han](https://github.com/ashan36), [Ryan Kerins](https://github.com/rkerins91), and [Nicolas Harrison](https://github.com/nicholasrobinharrison)
 
 ## The tech stack
 - Node/Express on the back end
+- MongoDB/Mongoosejs ODM
+- AWS S3 remote profile picture store
 - React/MaterialUI on the front end
 - Payments are handled with Stripe API
 - Notifications are handled with Socket.io
-- Assigning jobs are handled with Bull.js and redis
+- Background jobs are handled with Bull.js with queue maintained in redis
