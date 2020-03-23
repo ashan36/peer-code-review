@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const { connectDB } = require("./database");
 const passport = require("passport");
+const path = require("path");
 
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
@@ -33,6 +34,11 @@ app.use("/ping", pingRouter);
 app.use(userRouter);
 app.use(reviewRouter);
 app.use("/notifications", notificationRouter);
+
+app.use(express.static(path.join(__dirname, "client", "build")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
