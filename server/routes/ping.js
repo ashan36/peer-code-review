@@ -3,7 +3,6 @@ const router = express.Router();
 
 router.post("/", function(req, res, next) {
   const teamName = req.body.teamName;
-
   if (
     teamName &&
     process.env.TEAM_MEMBERS &&
