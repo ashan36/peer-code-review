@@ -292,24 +292,24 @@ const ThreadDisplay = ({
     }
   };
 
-  const ratingComponent = () => {
-    if (threadData.rating && threadData.status >= 2) {
-      if (threadData.creator === user._id) {
+  const RatingComponent = ({ creator, reviewer, userId, status, rating }) => {
+    if (rating && status >= 2) {
+      if (creator === userId) {
         return (
           <div className={classes.rating}>
             <Typography variant="subtitle2" align="right">
               Rate this review
             </Typography>
-            <Rating value={threadData.rating} onChange={handleRating} />
+            <Rating value={rating} onChange={handleRating} />
           </div>
         );
-      } else if (threadData.reviewer === user._id) {
+      } else if (reviewer === userId && status > 2) {
         return (
           <div className={classes.rating}>
             <Typography variant="subtitle2" align="right">
               Rating
             </Typography>
-            <Rating value={threadData.rating} readOnly />
+            <Rating value={rating} readOnly />
           </div>
         );
       }
@@ -342,7 +342,13 @@ const ThreadDisplay = ({
               >
                 {threadData.title}
               </Typography>
-              {ratingComponent()}
+              <RatingComponent
+                creator={threadData.creator}
+                reviewer={threadData.reviewer}
+                userId={user._id}
+                status={threadData.status}
+                rating={threadData.rating}
+              />
               {displayDecline ? (
                 <Tooltip title="Decline to review this request?">
                   <Button

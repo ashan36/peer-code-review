@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   drawer: {
     minWidth: "280px",
     width: "18vw",
-    height: "calc(100% - 10vh)",
+    height: "100%",
     top: "9vh",
     zIndex: 1000 // z-index of app bar is 1100, default of drawer is 1200
   },

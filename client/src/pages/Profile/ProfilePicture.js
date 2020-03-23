@@ -85,8 +85,7 @@ const useStyles = makeStyles({
   thumb: {
     objectFit: "cover",
     height: "auto",
-    width: "100%",
-    height: "100%"
+    width: "100%"
   },
   uploadButton: {
     display: "flex",
