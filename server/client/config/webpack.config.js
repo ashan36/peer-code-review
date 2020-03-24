@@ -340,7 +340,6 @@ module.exports = function(webpackEnv) {
                 customize: require.resolve(
                   "babel-preset-react-app/webpack-overrides"
                 ),
-
                 plugins: [
                   [
                     require.resolve("babel-plugin-named-asset-import"),
@@ -350,6 +349,23 @@ module.exports = function(webpackEnv) {
                           ReactComponent: "@svgr/webpack?-svgo,+ref![path]"
                         }
                       }
+                    }
+                  ],
+                  [
+                    require.resolve("babel-plugin-prismjs"),
+                    {
+                      languages: [
+                        "javascript",
+                        "css",
+                        "markup",
+                        "cpp",
+                        "c",
+                        "python",
+                        "java",
+                        "ruby"
+                      ],
+                      plugins: ["line-numbers"],
+                      css: true
                     }
                   ]
                 ],
@@ -375,31 +391,6 @@ module.exports = function(webpackEnv) {
                   [
                     require.resolve("babel-preset-react-app/dependencies"),
                     { helpers: true }
-                  ]
-                ],
-                plugins: [
-                  [
-                    require.resolve("babel-plugin-prismjs"),
-                    {
-                      plugins: [
-                        require.resolve("prismjs"),
-                        {
-                          languages: [
-                            "javascript",
-                            "css",
-                            "markup",
-                            "cpp",
-                            "c",
-                            "python",
-                            "java",
-                            "ruby"
-                          ],
-                          plugins: ["line-numbers"],
-                          theme: "okaida",
-                          css: true
-                        }
-                      ]
-                    }
                   ]
                 ],
                 cacheDirectory: true,
