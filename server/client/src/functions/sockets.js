@@ -2,7 +2,7 @@ import io from "socket.io-client";
 
 class SocketManager {
   constructor() {
-    this.socket = io("localhost:3001"); //in production do not specify port
+    this.socket = io(); //in production do not specify port
     this.subscribers = [];
   }
 
@@ -27,12 +27,11 @@ class SocketManager {
 
   initializeEvents() {
     this.socket.on("notification", data => {
-      console.log("notification received");
-      this.subscribers.forEach(subscriber => {
+      this.subscribers.forEach((subscriber, index) => {
         try {
           subscriber.function(data);
         } catch (err) {
-          console.log(err);
+          this.subscribers.splice(index, 1);
         }
       });
     });

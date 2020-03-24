@@ -89,7 +89,6 @@ const ThreadDisplay = ({
   const [participants, setParticipants] = useState(null);
 
   const getParticipants = async () => {
-    console.log("getting participants");
     try {
       const { data } = await axios({
         url: `/thread/${threadData._id}/posts/authors`,
@@ -329,7 +328,6 @@ const ThreadDisplay = ({
       </div>
     );
   } else {
-    console.log(participants);
     return (
       <div className={classes.root}>
         <Grid container className={classes.container}>
