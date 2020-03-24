@@ -5,7 +5,7 @@ const config = {
     notificationExpiry: 15552000
   },
   db: {
-    connectionString: process.env.MONGO_URI_DEV
+    connectionString: process.env.MONGO_URI
   },
   jwt: {
     secret: process.env.SECRET,
@@ -21,7 +21,7 @@ const config = {
       "new-post-by-reviewer",
       "new-rating"
     ],
-    assignmentTimeout: 86400000, // 30 seconds for testing
+    assignmentTimeout: 86400000, // 24 hours
     isAuth: passport.authenticate("jwt", { session: false })
   },
   stripe: {
@@ -31,6 +31,9 @@ const config = {
     accessKeyId: process.env.AWS_ACCESS_ID,
     secretKey: process.env.AWS_SECRET,
     bucketName: "peer-code"
+  },
+  redis: {
+    url: process.env.REDIS_URL
   }
 };
 

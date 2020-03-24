@@ -1,5 +1,5 @@
 const Queue = require("bull");
-const { matchingQueries, User } = require("../database");
+const { matchingQueries } = require("../database");
 const { assignThread, unassignThread } = require("../controllers/user");
 const { addToNoAssign, updateStatus } = require("../controllers/thread");
 const { createNotification } = require("../controllers/notifications");
@@ -22,7 +22,9 @@ const io = require("./socketService");
 class MatchingConfig {
   constructor() {
     this.io = io;
-    this.queue = new Queue("candidate matching");
+    this.queue = new Queue("candidate matching", {
+      redis: process.env.redis.url
+    });
   }
 
   addJob(job) {
