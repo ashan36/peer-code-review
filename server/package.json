@@ -6,8 +6,7 @@
     "dev": "nodemon ./bin/www",
     "debug": "nodemon --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-    "test-windows": "set NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
+    "test-windows": "set NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000"
   },
   "dependencies": {
     "aws-sdk": "^2.630.0",

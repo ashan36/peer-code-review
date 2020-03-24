@@ -1,0 +1,20 @@
+{
+  "name": "peer-code-review",
+  "version": "1.0.0",
+  "description": "Webapp to facilitate peer code reviews for developers",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd server/bin && node www.js",
+    "heroku-postbuild": "cd server/client && npm install --only=dev && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashan36/peer-code-review.git"
+  },
+  "author": "Alexander Han",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ashan36/peer-code-review/issues"
+  },
+  "homepage": "https://github.com/ashan36/peer-code-review#readme"
+}
