@@ -23,7 +23,7 @@ class MatchingConfig {
   constructor() {
     this.io = io;
     this.queue = new Queue("candidate matching", {
-      redis: process.env.redis.url
+      redis: config.redis.url
     });
   }
 
