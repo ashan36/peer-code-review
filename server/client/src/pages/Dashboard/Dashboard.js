@@ -131,6 +131,12 @@ const Dashboard = () => {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      getReviews();
+    }
+  }, []);
+
   const handleThreadRefresh = async (threadId, type) => {
     try {
       const response = await axios({
@@ -168,12 +174,6 @@ const Dashboard = () => {
       routeHistory.replace("/dashboard");
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      getReviews();
-    }
-  }, []);
 
   const selectDefault = () => {
     if (threadParam) {
@@ -230,7 +230,7 @@ const Dashboard = () => {
       setSelectedByType(state.reviews, "reviews");
     } else if (Object.values(state.assigned).length > 0) {
       setSelectedByType(state.assigned, "assigned");
-    }
+    } else setSelectedThread(0);
   };
 
   const setSelectedByType = (typeState, typeName) => {

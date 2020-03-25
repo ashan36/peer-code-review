@@ -37,6 +37,9 @@ const useStyles = makeStyles({
   },
   cardImg: {
     margin: "auto"
+  },
+  ratingIcon: {
+    display: "inline"
   }
 });
 
@@ -82,6 +85,8 @@ const ProfileActivity = ({ ownProfile, userId, user }) => {
                   name="disabled"
                   disabled
                   precision={0.25}
+                  classes={{ icon: classes.ratingIcon }}
+                  size="large"
                 />
               </CardContent>
             </Card>
@@ -145,6 +150,7 @@ const ProfileActivity = ({ ownProfile, userId, user }) => {
                     precision={0.25}
                     disabled
                     name="disabled"
+                    classes={{ icon: classes.ratingIcon }}
                   />
                 </CardContent>
               </Card>

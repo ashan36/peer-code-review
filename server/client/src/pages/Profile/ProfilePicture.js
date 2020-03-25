@@ -189,7 +189,9 @@ const Dropzone = ({ files, setFiles, saveAvatar }) => {
             className={classes.uploadProgress}
           />
         )}
-        <Button onClick={handlePictureUpload}>Upload</Button>
+        <Button onClick={handlePictureUpload} disabled={accepted.length < 1}>
+          Upload
+        </Button>
       </div>
     </div>
   );
