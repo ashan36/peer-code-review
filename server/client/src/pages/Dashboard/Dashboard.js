@@ -131,6 +131,12 @@ const Dashboard = () => {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      getReviews();
+    }
+  }, []);
+
   const handleThreadRefresh = async (threadId, type) => {
     try {
       const response = await axios({
@@ -168,12 +174,6 @@ const Dashboard = () => {
       routeHistory.replace("/dashboard");
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      getReviews();
-    }
-  }, []);
 
   const selectDefault = () => {
     if (threadParam) {
