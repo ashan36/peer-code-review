@@ -230,7 +230,7 @@ const Dashboard = () => {
       setSelectedByType(state.reviews, "reviews");
     } else if (Object.values(state.assigned).length > 0) {
       setSelectedByType(state.assigned, "assigned");
-    }
+    } else setSelectedThread(0);
   };
 
   const setSelectedByType = (typeState, typeName) => {

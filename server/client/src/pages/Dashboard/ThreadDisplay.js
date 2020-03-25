@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   Grid,
@@ -73,6 +74,13 @@ const useStyles = makeStyles({
     textTransform: "none",
     margin: "1em 1em",
     float: "right"
+  },
+  starterText: {
+    position: "relative",
+    marginLeft: "280px"
+  },
+  upload: {
+    color: "white"
   }
 });
 
@@ -108,7 +116,13 @@ const ThreadDisplay = ({
   };
 
   useEffect(() => {
-    getParticipants();
+    if (threadData !== null) {
+      if (threadData === 0) {
+        setParticipants(0);
+      } else {
+        getParticipants();
+      }
+    }
   }, [threadData]);
 
   //Editor state
@@ -292,7 +306,7 @@ const ThreadDisplay = ({
   };
 
   const RatingComponent = ({ creator, reviewer, userId, status, rating }) => {
-    if (rating && status >= 2) {
+    if (status >= 2) {
       if (creator === userId) {
         return (
           <div className={classes.rating}>
@@ -316,7 +330,7 @@ const ThreadDisplay = ({
     return <></>;
   };
 
-  if (!threadData || !participants) {
+  if (threadData === null || participants === null) {
     return (
       <div>
         <Backdrop className={classes.backdrop} open={true}>
@@ -324,6 +338,19 @@ const ThreadDisplay = ({
             className={classes.spinner}
             color="secondary"
           ></CircularProgress>
+        </Backdrop>
+      </div>
+    );
+  } else if (threadData === 0) {
+    return (
+      <div>
+        <Backdrop className={classes.backdrop} open={true}>
+          <Typography className={classes.starterText} variant="h2">
+            <Link className={classes.upload} to="/code-upload">
+              Upload
+            </Link>{" "}
+            code to get started!
+          </Typography>
         </Backdrop>
       </div>
     );
