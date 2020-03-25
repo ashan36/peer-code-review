@@ -34,10 +34,10 @@ const useStyles = makeStyles({
     justifyContent: "space-between"
   },
   largePaper: {
-    height: "70vh"
+    minHeight: "70vh"
   },
   smallPaper: {
-    height: "90vh"
+    minHeight: "90vh"
   },
   icon: {
     color: "#888888",
