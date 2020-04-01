@@ -22,24 +22,30 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post(
   "/signup",
   [
-    check("name", "Name is required")
+    body("name", "Name is required")
       .not()
       .isEmpty(),
-    check("email", "Please use a valid email address").isEmail(),
-    check("password", "Choose a password at least 6 characters long").isLength({
+    body("email", "Please use a valid email address")
+      .isEmail()
+      .normalizeEmail(),
+    body("password", "Choose a password at least 6 characters long").isLength({
       min: 6
     }),
     body("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Password confirmation does not match password");
       }
+      if (value === "") {
+        throw new Error("Password confirmation is required");
+      }
       return true;
     })
   ],
   async (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req).errors;
+    console.log(errors);
     if (errors.length > 0) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors });
     }
 
     const { name, email, password } = req.body;
@@ -81,15 +87,17 @@ router.post(
   [
     check("email", "Enter your account email address to login")
       .not()
-      .isEmpty(),
+      .isEmpty()
+      .normalizeEmail(),
     check("password", "Please enter a password to login")
       .not()
       .isEmpty()
   ],
   async (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req).errors;
+    console.log(errors);
     if (errors.length > 0) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors });
     }
 
     const { email, password } = req.body;

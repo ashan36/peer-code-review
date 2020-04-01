@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Button, TextField, Typography, makeStyles } from "@material-ui/core";
 import { SignUpContainer } from "components";
-import { UserContext } from "context/UserContext";
+import { UserContext, SizeContext } from "context";
 import axios from "axios";
 import socket from "functions/sockets";
 
@@ -12,8 +12,12 @@ const useStyles = makeStyles({
     width: "60%",
     margin: "2vh"
   },
+  smallInput: {
+    backgroundColor: "#EEE",
+    borderRadius: "5px"
+  },
   text: {
-    fontSize: "3vw",
+    fontSize: "1.8em",
     fontWeight: "800",
     margin: "2vh"
   },
@@ -44,6 +48,7 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(null);
   // user context
   const { user, setUser } = useContext(UserContext);
+  const { width, height } = useContext(SizeContext);
 
   const checkEmailError = () => {
     if (emailError) {
@@ -96,17 +101,14 @@ const Login = () => {
           },
           data: JSON.stringify(user)
         });
-        if (data.errors) {
-          setError(data.errors);
-        } else {
-          if ((data.success = true)) {
-            localStorage.setItem("peercode-auth-token", data.token);
-            setUser(data.user);
-            socket.login(data.user._id);
-          }
+        if ((data.success = true)) {
+          localStorage.setItem("peercode-auth-token", data.token);
+          setUser(data.user);
+          socket.login(data.user._id);
         }
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        let responseBody = err.response.data;
+        setError(responseBody.errors);
       }
     }
 
@@ -128,9 +130,9 @@ const Login = () => {
       <SignUpContainer>
         <Typography className={classes.text}> Sign In </Typography>
         <TextField
-          className={classes.input}
+          className={[classes.input, width < 900 && classes.smallInput]}
           label="email address"
-          variant="outlined"
+          variant={width < 900 ? "filled" : "outlined"}
           error={checkEmailError() ? true : false}
           helperText={emailError}
           onChange={e => {
@@ -138,10 +140,10 @@ const Login = () => {
           }}
         />
         <TextField
-          className={classes.input}
+          className={[classes.input, width < 900 && classes.smallInput]}
           label="password"
           type="password"
-          variant="outlined"
+          variant={width < 900 ? "filled" : "outlined"}
           error={checkPasswordError() ? true : false}
           helperText={passwordError}
           onChange={e => {
