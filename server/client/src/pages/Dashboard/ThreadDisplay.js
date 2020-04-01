@@ -38,12 +38,12 @@ const useStyles = makeStyles({
   },
   postWrapper: {
     background: "white",
-    width: "100%",
-    padding: "0 3em"
+    width: "100%"
   },
   editorWrapper: {
     background: "white",
-    width: "100%"
+    width: "100%",
+    padding: "10px"
   },
   threadTitle: {
     fontWeight: "500",
@@ -55,10 +55,12 @@ const useStyles = makeStyles({
     display: "block"
   },
   rating: {
-    float: "right"
+    float: "right",
+    marginRight: "3vw"
   },
   replyButton: {
-    float: "right"
+    float: "right",
+    marginRight: "3vw"
   },
   editButton: {
     backgroundColor: "#43DDC1",
@@ -276,6 +278,10 @@ const ThreadDisplay = ({
   };
 
   const handleRating = async (event, newValue) => {
+    if (newValue === null) {
+      return;
+    }
+
     const updateRating = async () => {
       const response = await axios({
         method: "put",

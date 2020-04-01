@@ -84,6 +84,7 @@ const reducer = (state, action) => {
 
 const Dashboard = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isLoading, setLoading] = useState(true);
   const classes = useStyles();
   const [selectedThread, setSelectedThread] = useState(null);
   var { threadParam, typeParam } = useParams();
@@ -123,6 +124,7 @@ const Dashboard = () => {
               assigned: createThreadObj(data.assigned)
             }
           });
+          setLoading(false);
           return;
         }
       }
@@ -230,7 +232,8 @@ const Dashboard = () => {
       setSelectedByType(state.reviews, "reviews");
     } else if (Object.values(state.assigned).length > 0) {
       setSelectedByType(state.assigned, "assigned");
-    } else setSelectedThread(0);
+    } else if (isLoading) setSelectedThread(null);
+    else setSelectedThread(0);
   };
 
   const setSelectedByType = (typeState, typeName) => {
@@ -238,10 +241,6 @@ const Dashboard = () => {
     setSelectedThread(typeState[threadParam]);
     routeHistory.replace(`/dashboard/${typeName}/${threadParam}`);
   };
-
-  useEffect(() => {
-    selectDefault();
-  }, [threadParam, typeParam, state.requests, state.reviews, state.assigned]);
 
   const handleNotification = notification => {
     const match = matchPath(notification.link, {
@@ -255,6 +254,10 @@ const Dashboard = () => {
 
     return () => socket.unsubscribe("dashboard");
   }, []);
+
+  useEffect(() => {
+    selectDefault();
+  }, [threadParam, typeParam, state.requests, state.reviews, state.assigned]);
 
   return (
     <div>
