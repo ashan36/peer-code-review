@@ -43,7 +43,7 @@ const useStyles = makeStyles({
   editorWrapper: {
     background: "white",
     width: "100%",
-    padding: "10px"
+    padding: "0 2vw"
   },
   threadTitle: {
     fontWeight: "500",
@@ -106,13 +106,10 @@ const ThreadDisplay = ({
         headers: { ...authHeader().headers }
       });
       if (data.errors) {
-        console.log(data.errors);
         return;
       }
-      console.log(data);
       setParticipants(data.authors);
     } catch (err) {
-      console.log(err);
       return;
     }
   };
