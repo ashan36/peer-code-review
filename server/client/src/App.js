@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { MuiThemeProvider } from "@material-ui/core";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { UserContext } from "./context/UserContext";
+import { UserContext, SizeContext } from "./context";
 import { authJWT, removeToken } from "./functions/jwt";
 import { SnackbarProvider } from "notistack";
 import { theme } from "./themes/theme";
@@ -14,6 +14,9 @@ import "./App.css";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [width, setWidth] = useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
+
   const [userLoading, setUserLoading] = useState(true);
 
   const logout = () => {
@@ -21,7 +24,12 @@ function App() {
     removeToken();
   };
 
-  const value = useMemo(
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+    setHeight(window.innerHeight);
+  };
+
+  const userValue = useMemo(
     () => ({
       user: user,
       isLoading: userLoading,
@@ -30,6 +38,14 @@ function App() {
     }),
     [user, userLoading, setUser]
   );
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   // On mount, check local token for user
   useEffect(() => {
@@ -47,19 +63,25 @@ function App() {
     return <Loading />;
   } else
     return (
-      <UserContext.Provider value={value}>
-        <MuiThemeProvider theme={theme}>
-          <SnackbarProvider maxSnack={4}>
-            <BrowserRouter>
-              <Switch>
-                <Route path="/signup" component={Signup} signupUser={setUser} />
-                <Route path="/login" component={Login} />
-                <Route path="/experience" component={Experience} />
-                <Route path="/" component={Home} />
-              </Switch>
-            </BrowserRouter>
-          </SnackbarProvider>
-        </MuiThemeProvider>
+      <UserContext.Provider value={userValue}>
+        <SizeContext.Provider value={{ width, height }}>
+          <MuiThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={4}>
+              <BrowserRouter>
+                <Switch>
+                  <Route
+                    path="/signup"
+                    component={Signup}
+                    signupUser={setUser}
+                  />
+                  <Route path="/login" component={Login} />
+                  <Route path="/experience" component={Experience} />
+                  <Route path="/" component={Home} />
+                </Switch>
+              </BrowserRouter>
+            </SnackbarProvider>
+          </MuiThemeProvider>
+        </SizeContext.Provider>
       </UserContext.Provider>
     );
 }

@@ -78,7 +78,7 @@ const ProfileActivity = ({ ownProfile, userId, user }) => {
                   My Rating
                 </Typography>
                 <Typography variant="h6" component="h3">
-                  {user.rating.averageRating}
+                  {user.rating.averageRating.toString().slice(0, 4)}
                 </Typography>
                 <Rating
                   value={user.rating.averageRating}
@@ -143,7 +143,7 @@ const ProfileActivity = ({ ownProfile, userId, user }) => {
                     Rating
                   </Typography>
                   <Typography gutterBottom variant="h5" component="h2">
-                    {rating}
+                    {rating.toString().slice(0, 4)}
                   </Typography>
                   <Rating
                     value={rating}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Button, TextField, Typography, makeStyles } from "@material-ui/core";
 import { SignUpContainer } from "components";
-import { UserContext } from "context/UserContext";
+import { UserContext, SizeContext } from "context";
 import axios from "axios";
 import socket from "functions/sockets";
 
@@ -12,8 +12,12 @@ const useStyles = makeStyles({
     width: "60%",
     margin: "2vh"
   },
+  smallInput: {
+    backgroundColor: "#EEE",
+    borderRadius: "5px"
+  },
   text: {
-    fontSize: "3vw",
+    fontSize: "1.8em",
     fontWeight: "800",
     margin: "2vh"
   },
@@ -21,8 +25,8 @@ const useStyles = makeStyles({
     backgroundColor: "#43DDC1",
     marginLeft: "30%",
     marginRight: "30%",
-    marginTop: "2vh",
-    marginBottom: "2vh",
+    marginTop: "1vh",
+    marginBottom: "1vh",
     width: "30%"
   },
   switch: {
@@ -44,6 +48,7 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState(null);
   // user context
   const { user, setUser } = useContext(UserContext);
+  const { width, height } = useContext(SizeContext);
 
   const checkEmailError = () => {
     if (emailError) {
@@ -85,7 +90,7 @@ const Login = () => {
     }
   }, [password]);
 
-  const submit = () => {
+  const submit = demo => {
     async function login(user) {
       try {
         const { data } = await axios({
@@ -96,26 +101,36 @@ const Login = () => {
           },
           data: JSON.stringify(user)
         });
-        if (data.errors) {
-          setError(data.errors);
-        } else {
-          if ((data.success = true)) {
-            localStorage.setItem("peercode-auth-token", data.token);
-            setUser(data.user);
-            socket.login(data.user._id);
-          }
+        if ((data.success = true)) {
+          localStorage.setItem("peercode-auth-token", data.token);
+          setUser(data.user);
+          socket.login(data.user._id);
         }
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        let responseBody = err.response.data;
+        setError(responseBody.errors);
       }
     }
 
-    const user = {
-      email: email,
-      password: password
-    };
+    if (demo) {
+      const user = {
+        email: "demouser@demo.com",
+        password: "123456"
+      };
+      login(user);
+    } else {
+      const user = {
+        email: email,
+        password: password
+      };
+      login(user);
+    }
+  };
 
-    login(user);
+  const handleSubmit = e => {
+    if (e.key === "Enter") {
+      submit(false);
+    }
   };
 
   // if the user is signed in, redirect them to the home page
@@ -128,33 +143,43 @@ const Login = () => {
       <SignUpContainer>
         <Typography className={classes.text}> Sign In </Typography>
         <TextField
-          className={classes.input}
+          className={[classes.input, width < 900 && classes.smallInput]}
           label="email address"
-          variant="outlined"
+          variant={width < 900 ? "filled" : "outlined"}
           error={checkEmailError() ? true : false}
           helperText={emailError}
           onChange={e => {
             setEmail(e.target.value);
           }}
+          onKeyPress={e => handleSubmit(e)}
         />
         <TextField
-          className={classes.input}
+          className={[classes.input, width < 900 && classes.smallInput]}
           label="password"
           type="password"
-          variant="outlined"
+          variant={width < 900 ? "filled" : "outlined"}
           error={checkPasswordError() ? true : false}
           helperText={passwordError}
           onChange={e => {
             setPassword(e.target.value);
           }}
+          onKeyPress={e => handleSubmit(e)}
         />
         <Button
           className={classes.button}
           variant="contained"
           color="primary"
-          onClick={submit}
+          onClick={() => submit(false)}
         >
           Login
+        </Button>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          onClick={() => submit(true)}
+        >
+          Log into Demo
         </Button>
         <Typography className={classes.switch}>
           Don't have an account?

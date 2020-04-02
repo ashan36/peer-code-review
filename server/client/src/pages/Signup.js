@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Button, TextField, Typography, makeStyles } from "@material-ui/core";
 import { SignUpContainer } from "components";
-import { UserContext } from "context/UserContext";
+import { UserContext, SizeContext } from "context";
 import axios from "axios";
 
 const useStyles = makeStyles({
@@ -11,8 +11,12 @@ const useStyles = makeStyles({
     width: "60%",
     margin: "2vh"
   },
+  smallInput: {
+    backgroundColor: "#EEE",
+    borderRadius: "5px"
+  },
   text: {
-    fontSize: "3vw",
+    fontSize: "1.8em",
     fontWeight: "800",
     marginBottom: "2vh"
   },
@@ -47,6 +51,7 @@ const Signup = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState(null);
   // user context
   const { user, setUser } = useContext(UserContext);
+  const { width, height } = useContext(SizeContext);
 
   const validateEmail = () => {
     if (emailError) {
@@ -94,7 +99,7 @@ const Signup = () => {
   }, [error]);
 
   const submit = () => {
-    async function signup(user) {
+    async function signup() {
       try {
         let { data } = await axios({
           url: "/signup",
@@ -102,29 +107,24 @@ const Signup = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          data: user
-        });
-        if (data.errors) {
-          setError(data.errors);
-        } else {
-          if ((data.success = true)) {
-            localStorage.setItem("peercode-auth-token", data.token);
-            setUser(data.user);
+          data: {
+            email: email,
+            name: name,
+            password: password,
+            confirmPassword: secondPassword
           }
+        });
+        if ((data.success = true)) {
+          localStorage.setItem("peercode-auth-token", data.token);
+          setUser(data.user);
         }
       } catch (err) {
-        console.log(err);
+        let responseBody = err.response.data;
+        setError(responseBody.errors);
       }
     }
 
-    let user = {
-      email: email,
-      name: name,
-      password: password,
-      confirmPassword: secondPassword
-    };
-
-    signup(user);
+    signup();
   };
 
   // if the user is signed in, redirect them to the add experience page
@@ -135,9 +135,9 @@ const Signup = () => {
       <SignUpContainer>
         <Typography className={classes.text}> Create An Account </Typography>
         <TextField
-          className={classes.input}
+          className={[classes.input, width < 900 && classes.smallInput]}
           label="email address"
-          variant="outlined"
+          variant={width < 900 ? "filled" : "outlined"}
           error={validateEmail()}
           helperText={emailError}
           onChange={e => {
@@ -145,9 +145,9 @@ const Signup = () => {
           }}
         />
         <TextField
-          className={classes.input}
+          className={[classes.input, width < 900 && classes.smallInput]}
           label="name"
-          variant="outlined"
+          variant={width < 900 ? "filled" : "outlined"}
           error={nameError ? true : false}
           helperText={nameError}
           onChange={e => {
@@ -155,10 +155,10 @@ const Signup = () => {
           }}
         />
         <TextField
-          className={classes.input}
+          className={[classes.input, width < 900 && classes.smallInput]}
           label="password"
           type="password"
-          variant="outlined"
+          variant={width < 900 ? "filled" : "outlined"}
           error={validatePassword() ? true : false}
           helperText={validatePassword()}
           onChange={e => {
@@ -166,10 +166,10 @@ const Signup = () => {
           }}
         />
         <TextField
-          className={classes.input}
+          className={[classes.input, width < 900 && classes.smallInput]}
           label="re-enter password"
           type="password"
-          variant="outlined"
+          variant={width < 900 ? "filled" : "outlined"}
           error={validateSecondPassword() ? true : false}
           helperText={validateSecondPassword()}
           onChange={e => {

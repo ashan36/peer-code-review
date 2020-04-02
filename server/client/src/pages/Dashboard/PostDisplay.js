@@ -22,7 +22,7 @@ const useStyles = makeStyles({
   },
   editor: {
     padding: "10px",
-    paddingLeft: "5em"
+    paddingLeft: "5vw"
   },
   editButton: {
     color: "#888888",
@@ -111,7 +111,13 @@ const PostDisplay = ({
   }
   return (
     <div className={classes.root}>
-      <Grid container spacing={1} justify="space-between" alignItems="center">
+      <Grid
+        container
+        spacing={1}
+        justify="space-between"
+        alignItems="center"
+        style={{ padding: "0 1vw 0 3vw" }}
+      >
         <Grid item xs={11}>
           <Link to={`/profile/${postData.author}`} className={classes.link}>
             <CustomAvatar user={author} avatarStyles={classes.avatar} />
