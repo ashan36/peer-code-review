@@ -36,6 +36,9 @@ const useStyles = makeStyles({
   link: {
     marginLeft: "1vh",
     textDecoration: "none"
+  },
+  mobileLink: {
+    color: "#43DDC1"
   }
 });
 
@@ -183,7 +186,10 @@ const Login = () => {
         </Button>
         <Typography className={classes.switch}>
           Don't have an account?
-          <Link className={classes.link} to="/signup">
+          <Link
+            className={`${classes.link} ${width < 900 && classes.mobileLink}`}
+            to="/signup"
+          >
             sign up
           </Link>
         </Typography>
