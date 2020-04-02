@@ -25,8 +25,8 @@ const useStyles = makeStyles({
     backgroundColor: "#43DDC1",
     marginLeft: "30%",
     marginRight: "30%",
-    marginTop: "2vh",
-    marginBottom: "2vh",
+    marginTop: "1vh",
+    marginBottom: "1vh",
     width: "30%"
   },
   switch: {
@@ -90,7 +90,7 @@ const Login = () => {
     }
   }, [password]);
 
-  const submit = () => {
+  const submit = demo => {
     async function login(user) {
       try {
         const { data } = await axios({
@@ -112,12 +112,25 @@ const Login = () => {
       }
     }
 
-    const user = {
-      email: email,
-      password: password
-    };
+    if (demo) {
+      const user = {
+        email: "demouser@demo.com",
+        password: "123456"
+      };
+      login(user);
+    } else {
+      const user = {
+        email: email,
+        password: password
+      };
+      login(user);
+    }
+  };
 
-    login(user);
+  const handleSubmit = e => {
+    if (e.key === "Enter") {
+      submit(false);
+    }
   };
 
   // if the user is signed in, redirect them to the home page
@@ -138,6 +151,7 @@ const Login = () => {
           onChange={e => {
             setEmail(e.target.value);
           }}
+          onKeyPress={e => handleSubmit(e)}
         />
         <TextField
           className={[classes.input, width < 900 && classes.smallInput]}
@@ -149,14 +163,23 @@ const Login = () => {
           onChange={e => {
             setPassword(e.target.value);
           }}
+          onKeyPress={e => handleSubmit(e)}
         />
         <Button
           className={classes.button}
           variant="contained"
           color="primary"
-          onClick={submit}
+          onClick={() => submit(false)}
         >
           Login
+        </Button>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          onClick={() => submit(true)}
+        >
+          Log into Demo
         </Button>
         <Typography className={classes.switch}>
           Don't have an account?
