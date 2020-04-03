@@ -9,23 +9,36 @@ import axios from "axios";
 import { authHeader } from "functions/jwt";
 import socket from "functions/sockets";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   link: {
     textDecoration: "none",
     color: "#6E3ADB"
   },
   container: {
-    marginLeft: "20vw",
-    marginTop: "9vh",
+    marginTop: "max(9vh, 56px)",
     width: "80vw",
-    height: "90vh"
+    height: "100%",
+    flexGrow: 1,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginLeft: "300px"
+  },
+  containerShift: {
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    width: "100%",
+    marginLeft: 0
   },
   gridItem: {
     marginLeft: "5vh",
     marginRight: "5vh",
     height: "80vh"
   }
-});
+}));
 
 const initialState = {
   requests: {},
@@ -85,6 +98,7 @@ const reducer = (state, action) => {
 const Dashboard = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isLoading, setLoading] = useState(true);
+  const [sidebarOpen, setSideBarOpen] = useState(true);
   const classes = useStyles();
   const [selectedThread, setSelectedThread] = useState(null);
   var { threadParam, typeParam } = useParams();
@@ -269,6 +283,10 @@ const Dashboard = () => {
     } else setSelectedThread(null);
   }, [threadParam, typeParam, isLoading]);
 
+  const handleToggleSidebar = () => {
+    setSideBarOpen(prev => !prev);
+  };
+
   return (
     <div>
       <SideBar
@@ -278,8 +296,12 @@ const Dashboard = () => {
         threadParam={threadParam}
         typeParam={typeParam}
         setSelectedThread={setSelectedThread}
+        toggleSidebar={handleToggleSidebar}
       ></SideBar>
-      <Grid container className={classes.container}>
+      <Grid
+        container
+        className={[classes.container, !sidebarOpen && classes.containerShift]}
+      >
         <Grid item xs={12} className={classes.gridItem}>
           <ThreadDisplay
             threadData={selectedThread}
