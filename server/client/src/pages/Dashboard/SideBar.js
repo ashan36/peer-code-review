@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Drawer,
-  Paper,
+  SwipeableDrawer,
   List,
+  Grid,
   ListItem,
   ListItemText,
   Divider,
   Typography,
   Collapse
 } from "@material-ui/core";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import {
+  ExpandLess,
+  ExpandMore,
+  ChevronLeft,
+  ChevronRight
+} from "@material-ui/icons";
+import { SizeContext } from "context";
 
 const useStyles = makeStyles({
   header: {
-    padding: "2vh",
+    padding: "1vh",
     fontSize: "2rem",
     fontWeight: 700
   },
@@ -24,11 +31,15 @@ const useStyles = makeStyles({
     color: "#43DDC1"
   },
   drawer: {
-    minWidth: "280px",
-    width: "18vw",
     height: "100%",
-    top: "9vh",
+    width: "350px",
+    top: "max(9vh, 56px)",
     zIndex: 1000 // z-index of app bar is 1100, default of drawer is 1200
+  },
+  drawerContentWrapper: {
+    display: "flex",
+    flexDirection: "row",
+    height: "100%"
   },
   list: {
     paddingLeft: "10px",
@@ -45,6 +56,27 @@ const useStyles = makeStyles({
   link: {
     textDecoration: "none",
     color: "black"
+  },
+  drawerControlOpen: {
+    position: "relative",
+    left: "300px",
+    height: "50px",
+    width: "50px",
+    marginTop: "10px",
+    color: "#888888",
+    "&:hover": {
+      color: "black"
+    }
+  },
+  drawerControlClosed: {
+    position: "fixed",
+    top: "calc(50vh - 25px)",
+    height: "50px",
+    width: "50px",
+    color: "#888888",
+    "&:hover": {
+      color: "black"
+    }
   }
 });
 
@@ -54,9 +86,12 @@ const SideBar = ({
   assigned,
   threadParam,
   typeParam,
-  setSelectedThread
+  setSelectedThread,
+  toggleSidebar
 }) => {
   const classes = useStyles();
+  const { width, height } = useContext(SizeContext);
+
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [requestsOpen, setRequestsOpen] = useState(false);
   const [reviewsOpen, setReviewsOpen] = useState(false);
@@ -64,6 +99,7 @@ const SideBar = ({
 
   const toggleDrawer = open => {
     setDrawerOpen(prev => !prev);
+    toggleSidebar();
   };
 
   const openRequests = () => {
@@ -107,122 +143,139 @@ const SideBar = ({
     }
   }, [typeParam]);
 
+  const drawerContent = () => {
+    return (
+      <List disablePadding={true}>
+        <ListItem button onClick={openRequests}>
+          <ListItemText>
+            <Typography className={classes.header}>
+              Requests{" "}
+              <span className={classes.counter}>{`(${requests.length})`}</span>
+            </Typography>
+          </ListItemText>
+          {requestsOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={requestsOpen}>
+          <List className={classes.list}>
+            {requests.map(thread => {
+              return (
+                <Link
+                  className={classes.link}
+                  to={"/dashboard/requests/" + thread._id}
+                  key={thread._id}
+                >
+                  <ListItem
+                    className={isSelected(thread._id)}
+                    button
+                    onClick={() => setSelectedThread(thread)}
+                  >
+                    <ListItemText
+                      primary={thread.title}
+                      secondary={getLocalDate(thread.createdAt)}
+                    />
+                  </ListItem>
+                </Link>
+              );
+            })}
+          </List>
+        </Collapse>
+        <Divider />
+        <ListItem button onClick={openReviews}>
+          <ListItemText>
+            <Typography className={classes.header}>
+              Reviews{" "}
+              <span className={classes.counter}>{`(${reviews.length})`}</span>
+            </Typography>
+          </ListItemText>
+          {reviewsOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={reviewsOpen}>
+          <List className={classes.list}>
+            {reviews.map(thread => {
+              return (
+                <Link
+                  className={classes.link}
+                  to={"/dashboard/reviews/" + thread._id}
+                  key={thread._id}
+                >
+                  <ListItem
+                    className={isSelected(thread._id)}
+                    button
+                    onClick={() => setSelectedThread(thread)}
+                  >
+                    <ListItemText
+                      primary={thread.title}
+                      secondary={getLocalDate(thread.createdAt)}
+                    />
+                  </ListItem>
+                </Link>
+              );
+            })}
+          </List>
+        </Collapse>
+        <Divider />
+        <ListItem button onClick={openAssigned}>
+          <ListItemText>
+            <Typography className={classes.header}>
+              Assigned{" "}
+              <span className={classes.counter}>{`(${assigned.length})`}</span>
+            </Typography>
+          </ListItemText>
+          {assignedOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={assignedOpen}>
+          <List className={classes.list}>
+            {assigned.map(thread => {
+              return (
+                <Link
+                  className={classes.link}
+                  to={"/dashboard/assigned/" + thread._id}
+                  key={thread._id}
+                >
+                  <ListItem
+                    className={isSelected(thread._id)}
+                    button
+                    onClick={() => setSelectedThread(thread)}
+                  >
+                    <ListItemText
+                      primary={thread.title}
+                      secondary={getLocalDate(thread.createdAt)}
+                    />
+                  </ListItem>
+                </Link>
+              );
+            })}
+          </List>
+        </Collapse>
+      </List>
+    );
+  };
+
   return (
     <div>
       <Drawer
         classes={{ paper: classes.drawer }}
         open={drawerOpen}
-        variant="persistent"
         elevation={3}
+        variant="persistent"
       >
-        <List disablePadding={true}>
-          <ListItem button onClick={openRequests}>
-            <ListItemText>
-              <Typography className={classes.header}>
-                Requests{" "}
-                <span
-                  className={classes.counter}
-                >{`(${requests.length})`}</span>
-              </Typography>
-            </ListItemText>
-            {requestsOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={requestsOpen}>
-            <List className={classes.list}>
-              {requests.map(thread => {
-                return (
-                  <Link
-                    className={classes.link}
-                    to={"/dashboard/requests/" + thread._id}
-                    key={thread._id}
-                  >
-                    <ListItem
-                      className={isSelected(thread._id)}
-                      button
-                      onClick={() => setSelectedThread(thread)}
-                    >
-                      <ListItemText
-                        primary={thread.title}
-                        secondary={getLocalDate(thread.createdAt)}
-                      />
-                    </ListItem>
-                  </Link>
-                );
-              })}
-            </List>
-          </Collapse>
-          <Divider />
-          <ListItem button onClick={openReviews}>
-            <ListItemText>
-              <Typography className={classes.header}>
-                Reviews{" "}
-                <span className={classes.counter}>{`(${reviews.length})`}</span>
-              </Typography>
-            </ListItemText>
-            {reviewsOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={reviewsOpen}>
-            <List className={classes.list}>
-              {reviews.map(thread => {
-                return (
-                  <Link
-                    className={classes.link}
-                    to={"/dashboard/reviews/" + thread._id}
-                    key={thread._id}
-                  >
-                    <ListItem
-                      className={isSelected(thread._id)}
-                      button
-                      onClick={() => setSelectedThread(thread)}
-                    >
-                      <ListItemText
-                        primary={thread.title}
-                        secondary={getLocalDate(thread.createdAt)}
-                      />
-                    </ListItem>
-                  </Link>
-                );
-              })}
-            </List>
-          </Collapse>
-          <Divider />
-          <ListItem button onClick={openAssigned}>
-            <ListItemText>
-              <Typography className={classes.header}>
-                Assigned{" "}
-                <span
-                  className={classes.counter}
-                >{`(${assigned.length})`}</span>
-              </Typography>
-            </ListItemText>
-            {assignedOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={assignedOpen}>
-            <List className={classes.list}>
-              {assigned.map(thread => {
-                return (
-                  <Link
-                    className={classes.link}
-                    to={"/dashboard/assigned/" + thread._id}
-                    key={thread._id}
-                  >
-                    <ListItem
-                      className={isSelected(thread._id)}
-                      button
-                      onClick={() => setSelectedThread(thread)}
-                    >
-                      <ListItemText
-                        primary={thread.title}
-                        secondary={getLocalDate(thread.createdAt)}
-                      />
-                    </ListItem>
-                  </Link>
-                );
-              })}
-            </List>
-          </Collapse>
-        </List>
+        {drawerOpen ? (
+          <ChevronLeft
+            className={classes.drawerControlOpen}
+            onClick={toggleDrawer}
+          />
+        ) : (
+          <ChevronLeft className={classes.drawerControlOpen} />
+        )}
+        <Divider />
+        {drawerContent()}
       </Drawer>
+      {!drawerOpen && (
+        <ChevronRight
+          className={classes.drawerControlClosed}
+          onClick={toggleDrawer}
+        />
+      )}
     </div>
   );
 };

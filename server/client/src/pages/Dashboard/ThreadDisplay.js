@@ -24,8 +24,7 @@ const useStyles = makeStyles({
     color: "#fff"
   },
   spinner: {
-    position: "relative",
-    left: "8vh"
+    position: "relative"
   },
   header: {
     background: "white",
